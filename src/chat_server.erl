@@ -10,7 +10,6 @@
 start_link() ->
   gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
-% state should be change with State that you will pass
 init([]) ->
     {ok, #state{}}.
 

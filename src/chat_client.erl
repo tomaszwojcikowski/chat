@@ -14,7 +14,7 @@
                  outbox = #{}
                  }).
 				 
--typedef state() :: #state{}.
+-type state() :: #state{}.
 
 % public api
 -spec start_link(string()) -> {ok, pid()}.
