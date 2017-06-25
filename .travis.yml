@@ -6,3 +6,7 @@ otp_release:
   - 19.0
   - 18.3
   - 17.5
+script:
+  - rebar3 compile
+  - rebar3 dialyzer
+  - rebar3 eunit
