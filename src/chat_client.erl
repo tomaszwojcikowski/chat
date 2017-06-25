@@ -13,9 +13,11 @@
                  name = "",
                  outbox = #{}
                  }).
+				 
+-typedef state() :: #state{}.
 
 % public api
-
+-spec start_link(string()) -> {ok, pid()}.
 start_link(Name) ->
   gen_server:start_link(?MODULE, [Name], []).
 
@@ -61,17 +63,20 @@ handle_info({status, connected, ClientPid, Name}, State) ->
 handle_info({'DOWN', _MonitorRef, _Type, Server, _Info}, #state{server=Server}) ->
     {noreply, #state{}}.
 
-
+-spec add(pid(), string(), state()) -> state().
 add(ClientPid, Name, State = #state{clients=Clients}) ->
     State#state{clients=maps:put(ClientPid, Name, Clients)}.
 
+-spec remove(pid(), state()) -> state().
 remove(ClientPid, State = #state{clients=Clients}) ->
     State#state{clients=maps:remove(ClientPid, Clients)}.
 
+-spec display_msg(pid(), term(), state()) -> state().
 display_msg(ClientPid, Msg, State) ->
     io:format("~p: ~p~n", [get_name(ClientPid, State), Msg]),
     State.
 
+-spec send_msg(pid, term(), state()) -> {ok | no_client, state()}.	
 send_msg(ClientName, Msg, State=#state{outbox=OutboxMap}) ->
  case find_by_name(ClientName, State) of
         {ok, ClientPid} ->
@@ -85,6 +90,7 @@ send_msg(ClientName, Msg, State=#state{outbox=OutboxMap}) ->
 sent_read(ClientPid) ->
     ClientPid ! {read, self()}.
 
+-spec mark_as_read(pid(), state()) -> state().
 mark_as_read(ClientPid, State = #state{outbox=OutboxMap}) ->
     case maps:get(ClientPid, OutboxMap, []) of
         [] -> State;
