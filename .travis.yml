@@ -9,4 +9,4 @@ otp_release:
 install:
   - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
 script:
-  - ./rebar3 compile dialyzer xref eunit
+  - ./rebar3 do compile, dialyzer, xref, eunit
